@@ -6,7 +6,7 @@ namespace Expense_Tracker_ASP.NET_CORE.Models
     public class Category
     {
         [Key]
-        public int CatogeryId { get; set; }
+        public int CategoryId { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public string? Title { get; set; }
