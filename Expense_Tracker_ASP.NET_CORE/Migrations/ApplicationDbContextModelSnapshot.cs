@@ -17,18 +17,18 @@ namespace Expense_Tracker_ASP.NET_CORE.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Expense_Tracker_ASP.NET_CORE.Models.Category", b =>
                 {
-                    b.Property<int>("CatogeryId")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CatogeryId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(5)");
@@ -39,7 +39,7 @@ namespace Expense_Tracker_ASP.NET_CORE.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(10)");
 
-                    b.HasKey("CatogeryId");
+                    b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -50,7 +50,7 @@ namespace Expense_Tracker_ASP.NET_CORE.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
