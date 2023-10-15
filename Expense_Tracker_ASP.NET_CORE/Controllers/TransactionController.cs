@@ -27,10 +27,13 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
 
 
         // GET: Transaction/AddOrEdit
-        public IActionResult AddOrEdit()
+        public IActionResult AddOrEdit(int id=0)
         {
             PopulateCategories();
-            return View(new Transaction());
+            if(id == 0)
+                return View(new Transaction());
+            else
+                return View(_context.Transactions.Find(id));
         }
 
         // POST: Transaction/AddOrEdit
@@ -42,7 +45,10 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(transaction);
+                if (transaction.TransactionId == 0)
+                    _context.Add(transaction);
+                else
+                    _context.Update(transaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
