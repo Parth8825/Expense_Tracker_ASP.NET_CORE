@@ -18,6 +18,9 @@ namespace Expense_Tracker_ASP.NET_CORE.Models
 
         [Column(TypeName = "nvarchar(75)")]
         public string? Note { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0: MMM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; } = DateTime.Now;
 
         [NotMapped]
