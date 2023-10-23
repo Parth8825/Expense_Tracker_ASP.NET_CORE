@@ -97,6 +97,13 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
                                           expense = expense == null ? 0 : expense.expense,
                                       };
 
+            //Recent Transactions
+            ViewBag.RecentTranscations = await _context.Transactions
+                .Include(i => i.Category)
+                .OrderByDescending(j => j.Date)
+                .Take(5)
+                .ToListAsync();
+
             return View();
         }
     }
