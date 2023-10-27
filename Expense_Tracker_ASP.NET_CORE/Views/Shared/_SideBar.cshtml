@@ -1,7 +1,14 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using Microsoft.AspNetCore.Identity
+@using Expense_Tracker_ASP.NET_CORE.Areas.Identity.Data
+
+@inject UserManager<ApplicationUser> UserManager
+
 @{
+    var user = await UserManager.GetUserAsync(User);
+
     List<Object> menuItems = new List<Object>();
 
     menuItems.Add(new
@@ -61,7 +68,7 @@
             <img class="profile-pic" src="~/profile/GokuProfile.jpg" />
             <div class="titles d-flex flex-cloumn ps-3">
                 <h6 class="mb-0">Wallet App</h6>
-                <span class="text-muted">Son Goku</span>
+                <span class="text-muted">@user.FirstName @user.LastName</span>
             </div>
         </div>
         <ejs-menu id="menu" 

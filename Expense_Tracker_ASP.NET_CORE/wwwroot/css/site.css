@@ -47,7 +47,7 @@ body {
 }
 
 .login-logout-card a.nav-link {
-    font-size: 1.5rem;
+    font-size: 1rem;
     color: #495057;
     text-align: center;
     padding: 1rem;
@@ -57,7 +57,9 @@ body {
     padding: 10px 20px;
 }
 .card {
+    font-size: 1rem;
     color: #2E2E2E;
+    overflow: hidden;
 }
 
 /*BreadCrumb*/

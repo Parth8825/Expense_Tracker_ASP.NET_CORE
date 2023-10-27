@@ -17,10 +17,12 @@
     @if (ViewData["LoginPage"] == null)
     {
         <partial name="_SideBar"/>
+        
         <div class="dock-target">
             <nav class="navbar sticky-top bg-body-tertiary">
                 <div class="container-fluid py-2 px-4">
                     <i class="fa-solid fa-magnifying-glass"></i>
+                    <partial name="_LoginPartial.cshtml" />
                     <div>
                         <i class="fa-solid fa-bell"></i>
                         <i class="fa-solid fa-message">
@@ -70,9 +72,11 @@
     }
     else
     { 
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+         <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,10 +1,13 @@
 ﻿using Expense_Tracker_ASP.NET_CORE.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace Expense_Tracker_ASP.NET_CORE.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -13,7 +16,11 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         {
             _context = context;
         }
-
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login");
+        }
         public async Task<ActionResult> Index()
         {
             //Last 7 Days
