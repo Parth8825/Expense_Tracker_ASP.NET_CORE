@@ -5,11 +5,13 @@
 @using Expense_Tracker_ASP.NET_CORE.Areas.Identity.Data
 
 @inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     var user = await UserManager.GetUserAsync(User);
 
     List<Object> menuItems = new List<Object>();
+
 
     menuItems.Add(new
     {
@@ -74,6 +76,12 @@
         <ejs-menu id="menu" 
                   items="menuItems"
                   orientation="Vertical"></ejs-menu>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "DashBoard", new { area = "" })">
+                <button id="logout" type="submit">Logout</button>
+            </form>
+        }
     </e-content-template>
 </ejs-sidebar>
 

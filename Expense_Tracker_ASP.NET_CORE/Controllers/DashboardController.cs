@@ -16,11 +16,11 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Login");
-        }
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await HttpContext.SignOutAsync();
+        //    return RedirectToAction("Login");
+        //}
         public async Task<ActionResult> Index()
         {
             //Last 7 Days
