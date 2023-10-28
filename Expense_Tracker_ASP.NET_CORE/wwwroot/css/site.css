@@ -33,6 +33,34 @@ body {
     overflow-y: auto;
     height: 92vh;
 }
+/*tab navigation*/
+.login-logout-card .card-header {
+    padding: 0px 0px 12px 0px;
+}
+
+.login-logout-card ul.nav-tabs {
+    margin: 0px 0px -12px 0px;
+}
+
+.login-logout-card li.nav-item {
+    width: 50%;
+}
+
+.login-logout-card a.nav-link {
+    font-size: 1rem;
+    color: #495057;
+    text-align: center;
+    padding: 1rem;
+}
+
+.login-logout-card .card-body {
+    padding: 10px 20px;
+}
+.card {
+    font-size: 1rem;
+    color: #2E2E2E;
+    overflow: hidden;
+}
 
 /*BreadCrumb*/
 .e-breadcrumb a, .e-breadcrumb a:hover {
@@ -204,6 +232,17 @@ body {
             margin-top: 35px;
         }
 
+
+#logout {
+    display: inline-block;
+    width: 100% !important;
+    background-color: rgb(98, 0, 0);
+    color: rgb(171, 163, 152);
+    font-weight: bold;
+    padding: 7px 5px;
+    box-sizing: border-box;
+    text-transform: uppercase;
+}
 /*Navbar*/
 nav.navbar {
     background-color: rgba(18, 22, 29);

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Expense_Tracker_ASP.NET_CORE.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,6 +23,10 @@ namespace Expense_Tracker_ASP.NET_CORE.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0: MMM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; } = DateTime.Now;
+
+        public string? UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public ApplicationUser? User { get; set; }
 
         [NotMapped]
         public string? CategoryTitleWithIcon
