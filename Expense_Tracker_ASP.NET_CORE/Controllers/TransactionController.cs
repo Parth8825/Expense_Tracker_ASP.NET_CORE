@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Expense_Tracker_ASP.NET_CORE.Models;
 using Microsoft.AspNetCore.Authorization;
+using Expense_Tracker_ASP.NET_CORE.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Expense_Tracker_ASP.NET_CORE.Controllers
 {
@@ -14,16 +17,22 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
     public class TransactionController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TransactionController(ApplicationDbContext context)
+
+        public TransactionController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Transaction
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Transactions.Include(t => t.Category);
+            var userId = _userManager.GetUserId(this.User);
+            var applicationDbContext = _context.Transactions
+                .Where(x => x.UserId == userId)
+                .Include(t => t.Category);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -33,9 +42,22 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         {
             PopulateCategories();
             if(id == 0)
+            {
+                var newTransaction = new Transaction();
+                // Get the currently logged-in user's ID
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                newTransaction.UserId = userId;
                 return View(new Transaction());
+            } 
             else
-                return View(_context.Transactions.Find(id));
+            {
+                var existingTransaction = _context.Transactions.Find(id);
+                if (existingTransaction == null)
+                {
+                    return NotFound();
+                }
+                return View(existingTransaction);
+            }
         }
 
         // POST: Transaction/AddOrEdit
@@ -47,10 +69,32 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = _userManager.GetUserId(this.User);
+
                 if (transaction.TransactionId == 0)
+                {
+                    transaction.UserId = userId;
                     _context.Add(transaction);
+                }
                 else
-                    _context.Update(transaction);
+                {
+                    var existingTransaction = _context.Transactions.Find(transaction.TransactionId);
+                    if(existingTransaction == null)
+                    {
+                        return NotFound();
+                    }
+                    if(existingTransaction.UserId != userId)
+                    {
+                        return Forbid();
+                    }
+
+                    existingTransaction.CategoryId = transaction.CategoryId;
+                    existingTransaction.Amount = transaction.Amount;
+                    existingTransaction.Note = transaction.Note;
+                    existingTransaction.Date = transaction.Date;
+
+                    _context.Update(existingTransaction);
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

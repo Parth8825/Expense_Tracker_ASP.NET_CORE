@@ -1,8 +1,11 @@
-﻿using Expense_Tracker_ASP.NET_CORE.Models;
+﻿using Expense_Tracker_ASP.NET_CORE.Areas.Identity.Data;
+using Expense_Tracker_ASP.NET_CORE.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Globalization;
 
 namespace Expense_Tracker_ASP.NET_CORE.Controllers
@@ -11,10 +14,13 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DashboardController(ApplicationDbContext context)
+
+        public DashboardController(ApplicationDbContext context, UserManager<ApplicationUser> userManager )
         {
             _context = context;
+            _userManager = userManager;
         }
         //public async Task<IActionResult> Logout()
         //{
@@ -23,12 +29,14 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         //}
         public async Task<ActionResult> Index()
         {
+            var userId = _userManager.GetUserId(this.User);
             //Last 7 Days
             DateTime StartDate = DateTime.Today.AddDays(-6);
             DateTime EndDate = DateTime.Today;
 
             List<Transaction> SelectedTransactions = await _context.Transactions
                 .Include(x => x.Category)
+                .Where(z => z.UserId == userId)
                 .Where(y => y.Date >= StartDate && y.Date <= EndDate)
                 .ToListAsync();
 

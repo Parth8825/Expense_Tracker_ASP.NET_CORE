@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Expense_Tracker_ASP.NET_CORE.Models;
 using Microsoft.AspNetCore.Authorization;
+using Expense_Tracker_ASP.NET_CORE.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Expense_Tracker_ASP.NET_CORE.Controllers
 {
@@ -14,17 +16,24 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CategoryController(ApplicationDbContext context)
+
+        public CategoryController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
+
+            var userId = _userManager.GetUserId(this.User);
               return _context.Categories != null ? 
-                          View(await _context.Categories.ToListAsync()) :
+                          View(await _context.Categories
+                          .Where(i => i.UserId == userId)
+                          .ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
         }
 
@@ -33,9 +42,23 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         public IActionResult AddOrEdit(int id=0)
         {
             if(id == 0)
+            {
+                var newCategory = new Category();
+                // Get the currently logged-in user's ID
+                var userId = _userManager.GetUserId(this.User);
+                newCategory.UserId = userId;
+
                 return View(new Category());
+            }
             else
-                return View(_context.Categories.Find(id));
+            {
+                var existingCategory = _context.Categories.Find(id);
+                if (existingCategory == null)
+                {
+                    return NotFound();
+                }
+                return View(existingCategory);
+            }
 
         }
 
@@ -48,13 +71,28 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(category.CategoryId == 0)
+                var userId = _userManager.GetUserId(this.User);
+                if (category.CategoryId == 0)
                 {
+                    category.UserId = userId;
                     _context.Add(category);
                 }
                 else
                 {
-                    _context.Update(category);
+                    var existingCategory = _context.Categories.Find(category.CategoryId);
+                    if (existingCategory == null)
+                    {
+                        return NotFound();
+                    }
+                    if (existingCategory.UserId != userId)
+                    {
+                        return Forbid(); // Handle unauthorized access to edit category
+                    }
+                    existingCategory.Title = category.Title;
+                    existingCategory.Icon = category.Icon;
+                    existingCategory.Type = category.Type;
+
+                    _context.Update(existingCategory);
                 }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
