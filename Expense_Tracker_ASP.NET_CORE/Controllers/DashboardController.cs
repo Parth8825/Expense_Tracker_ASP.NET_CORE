@@ -114,6 +114,7 @@ namespace Expense_Tracker_ASP.NET_CORE.Controllers
 
             //Recent Transactions
             ViewBag.RecentTranscations = await _context.Transactions
+                .Where(k => k.UserId == _userManager.GetUserId(this.User))
                 .Include(i => i.Category)
                 .OrderByDescending(j => j.Date)
                 .Take(5)
